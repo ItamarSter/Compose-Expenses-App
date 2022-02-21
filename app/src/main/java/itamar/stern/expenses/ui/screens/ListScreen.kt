@@ -9,9 +9,7 @@ import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.expandHorizontally
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -24,11 +22,13 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,7 +43,7 @@ import java.time.LocalDateTime
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun FirstScreen() {
+fun ListScreen() {
     val context = LocalContext.current
     val savedString = stringResource(id = R.string.saved)
     val viewModel: FirstViewModel = viewModel()
@@ -86,6 +86,8 @@ fun FirstScreen() {
 
 @Composable
 fun ExpenseItem(expense: Expenses) {
+    var textOverFlow by remember { mutableStateOf(false) }
+    var maxLines by remember { mutableStateOf(1) }
     Card(
         elevation = 4.dp,
         modifier = Modifier
@@ -93,6 +95,21 @@ fun ExpenseItem(expense: Expenses) {
             .padding(horizontal = 12.dp)
             .padding(top = 4.dp, bottom = 2.dp)
     ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
+        ) {
+            Icon(
+                imageVector = if (maxLines == 1) Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowUp,
+                contentDescription = "",
+                Modifier
+                    .alpha(if (!textOverFlow && maxLines == 1) 0f else 1f)
+                    .clickable {
+                        maxLines = if (maxLines == 1) 4 else 1
+                    }
+            )
+        }
         Column(
             modifier = Modifier
                 .padding(8.dp)
@@ -107,8 +124,17 @@ fun ExpenseItem(expense: Expenses) {
                     modifier = Modifier
                         .fillMaxWidth(0.33f)
                 )
-                Text(text = expense.category)
-                if (expense.title != "") Text(text = ": ${expense.title}")
+                Text(text = "${expense.category} | ")
+                if (expense.title != "") {
+                    Text(
+                        text = expense.title,
+                        maxLines = maxLines,
+                        overflow = TextOverflow.Ellipsis,
+                        onTextLayout = {
+                            textOverFlow = it.hasVisualOverflow
+                        }
+                    )
+                }
             }
             Divider(color = Color.Black)
             Row(
@@ -132,7 +158,7 @@ fun OpenAddDialog(saveExpense: (Expenses) -> Unit, onDismiss: () -> Unit) {
     var grayOrRedTextField by remember { mutableStateOf(Color.Gray) }
     var sumValue by remember { mutableStateOf("") }
     var titleValue by remember { mutableStateOf("") }
-    var dateValue by remember { mutableStateOf("${LocalDateTime.now().dayOfMonth}/${LocalDateTime.now().monthValue}") }
+    var dateValue by remember { mutableStateOf("${LocalDate.now().dayOfMonth}/${LocalDate.now().monthValue}/${LocalDate.now().year}") }
     var dropDownExpanded by remember { mutableStateOf(false) }
     val dropItems = listOf(
         stringResource(id = R.string.food),
@@ -202,7 +228,11 @@ fun OpenAddDialog(saveExpense: (Expenses) -> Unit, onDismiss: () -> Unit) {
                                     .fillMaxWidth()
                                     .padding(bottom = 2.dp)
                             )
-                            Text(text = dateValue, fontSize = 10.sp, letterSpacing = 0.sp)
+                            Text(
+                                text = dateValue.substring(0, dateValue.length - 5),
+                                fontSize = 10.sp,
+                                letterSpacing = 0.sp
+                            )
                         }
 
                     }
@@ -245,7 +275,13 @@ fun OpenAddDialog(saveExpense: (Expenses) -> Unit, onDismiss: () -> Unit) {
                     OutlinedButton(
                         onClick = {
                             if (sumValue != "") {
-                                saveExpense(saveExpense, selectedItem, sumValue, titleValue)
+                                saveExpense(
+                                    saveExpense,
+                                    selectedItem,
+                                    sumValue,
+                                    titleValue,
+                                    dateValue
+                                )
                                 onDismiss()
                             } else {
                                 grayOrRedTextField = Color.Red
@@ -292,11 +328,10 @@ fun OpenAddDialog(saveExpense: (Expenses) -> Unit, onDismiss: () -> Unit) {
 
 @RequiresApi(Build.VERSION_CODES.O)
 private fun showDatePicker(context: Context, updateDate: (String) -> Unit) {
-    DatePickerDialog(context,{ _, year, monthOfYear, dayOfMonth ->
-        updateDate("$dayOfMonth/$monthOfYear/$year")
-    }, LocalDate.now().year, LocalDate.now().monthValue, LocalDate.now().dayOfMonth).show()
+    DatePickerDialog(context, { _, year, monthOfYear, dayOfMonth ->
+        updateDate("$dayOfMonth/${monthOfYear + 1}/$year")
+    }, LocalDate.now().year, LocalDate.now().monthValue - 1, LocalDate.now().dayOfMonth).show()
 }
-
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -304,14 +339,15 @@ private fun saveExpense(
     saveExpense: (Expenses) -> Unit,
     selectedItem: String,
     sumValue: String,
-    titleValue: String
+    titleValue: String,
+    dateValue: String
 ) {
     val date = LocalDateTime.now()
     saveExpense(
         Expenses(
             System.currentTimeMillis(),
             selectedItem,
-            "${date.dayOfMonth}/${date.monthValue}/${date.year}",
+            dateValue,
             sumValue.toDouble(),
             titleValue,
             "${date.hour}:${if (date.minute.toString().length > 1) date.minute else "0${date.minute}"}"

@@ -28,11 +28,11 @@ fun NavBar(navController: NavHostController) {
     var tabIndex by remember { mutableStateOf(0) }
     val tabTitles = listOf(
         stringResource(id = R.string.list_tab),
-        stringResource(id = R.string.calc_tab),
-        stringResource(id = R.string.third_tab)
+        stringResource(id = R.string.info_tab),
+        stringResource(id = R.string.history_tab)
     )
     val tabColors = listOf(Orange, Red, Blue)
-    val tabAddresses = listOf("first_screen", "second_screen", "third_screen")
+    val tabAddresses = listOf("list_screen", "info_screen", "history_screen")
     TabRow(
         selectedTabIndex = tabIndex,
         backgroundColor = Color.Black,

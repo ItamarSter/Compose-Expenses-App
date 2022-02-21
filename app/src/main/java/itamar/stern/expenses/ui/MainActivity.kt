@@ -17,9 +17,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import itamar.stern.expenses.ui.nav_bar.NavBar
-import itamar.stern.expenses.ui.screens.FirstScreen
-import itamar.stern.expenses.ui.screens.SecondScreen
-import itamar.stern.expenses.ui.screens.ThirdScreen
+import itamar.stern.expenses.ui.screens.ListScreen
+import itamar.stern.expenses.ui.screens.InfoScreen
+import itamar.stern.expenses.ui.screens.HistoryScreen
 import itamar.stern.expenses.ui.theme.ExpensesTheme
 
 class MainActivity : ComponentActivity() {
@@ -46,16 +46,16 @@ fun ExpensesApp() {
         NavHost(
             modifier = Modifier.padding(it),
             navController = navController,
-            startDestination = "first_screen"
+            startDestination = "list_screen"
         ) {
-            composable("first_screen") {
-                FirstScreen()
+            composable("list_screen") {
+                ListScreen()
             }
-            composable("second_screen") {
-                SecondScreen()
+            composable("info_screen") {
+                InfoScreen()
             }
-            composable("third_screen") {
-                ThirdScreen()
+            composable("history_screen") {
+                HistoryScreen()
             }
         }
     }

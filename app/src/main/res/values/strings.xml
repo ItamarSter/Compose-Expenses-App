@@ -15,6 +15,6 @@
     <string name="details">Details</string>
     <string name="saved">Saved</string>
     <string name="list_tab">List</string>
-    <string name="calc_tab">Calculations</string>
-    <string name="third_tab">Third</string>
+    <string name="info_tab">Information</string>
+    <string name="history_tab">History</string>
 </resources>

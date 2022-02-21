@@ -16,6 +16,6 @@
     <string name="details">פירוט</string>
     <string name="saved">נשמר</string>
     <string name="list_tab">רשימה</string>
-    <string name="calc_tab">חישובים</string>
-    <string name="third_tab">עוד</string>
+    <string name="info_tab">מידע</string>
+    <string name="history_tab">היסטוריה</string>
 </resources>
