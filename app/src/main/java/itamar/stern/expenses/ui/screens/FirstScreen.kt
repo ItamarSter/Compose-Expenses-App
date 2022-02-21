@@ -1,13 +1,21 @@
 package itamar.stern.expenses.ui.screens
 
+import android.app.DatePickerDialog
+import android.content.Context
 import android.os.Build
+import android.widget.DatePicker
 import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.expandHorizontally
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -21,12 +29,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.android.material.datepicker.MaterialDatePicker
 import itamar.stern.expenses.R
 import itamar.stern.expenses.models.Expenses
 import itamar.stern.expenses.ui.view_models.FirstViewModel
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 
@@ -117,9 +128,11 @@ fun ExpenseItem(expense: Expenses) {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun OpenAddDialog(saveExpense: (Expenses) -> Unit, onDismiss: () -> Unit) {
+    val context = LocalContext.current
     var grayOrRedTextField by remember { mutableStateOf(Color.Gray) }
     var sumValue by remember { mutableStateOf("") }
     var titleValue by remember { mutableStateOf("") }
+    var dateValue by remember { mutableStateOf("${LocalDateTime.now().dayOfMonth}/${LocalDateTime.now().monthValue}") }
     var dropDownExpanded by remember { mutableStateOf(false) }
     val dropItems = listOf(
         stringResource(id = R.string.food),
@@ -147,12 +160,11 @@ fun OpenAddDialog(saveExpense: (Expenses) -> Unit, onDismiss: () -> Unit) {
                 )
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.Top
+                        .fillMaxWidth()
                 ) {
                     OutlinedTextField(
                         modifier = Modifier
-                            .fillMaxWidth(0.8f)
+                            .fillMaxWidth(0.78f)
                             .padding(end = 8.dp),
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             unfocusedBorderColor = grayOrRedTextField,
@@ -169,13 +181,30 @@ fun OpenAddDialog(saveExpense: (Expenses) -> Unit, onDismiss: () -> Unit) {
                         maxLines = 1,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
-                    OutlinedButton(onClick = { /*TODO*/ }) {
-                        Icon(
-                            imageVector = Icons.Default.DateRange,
-                            contentDescription = "",
-                            Modifier
-                                .fillMaxWidth()
-                        )
+                    OutlinedButton(
+                        onClick = {
+                            showDatePicker(context) {
+                                dateValue = it
+                            }
+                        },
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .border(1.dp, Color.Gray, RoundedCornerShape(4.dp))
+                            .align(Alignment.Top),
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.DateRange,
+                                contentDescription = "",
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 2.dp)
+                            )
+                            Text(text = dateValue, fontSize = 10.sp, letterSpacing = 0.sp)
+                        }
+
                     }
 
                 }
@@ -260,6 +289,14 @@ fun OpenAddDialog(saveExpense: (Expenses) -> Unit, onDismiss: () -> Unit) {
         }
     )
 }
+
+@RequiresApi(Build.VERSION_CODES.O)
+private fun showDatePicker(context: Context, updateDate: (String) -> Unit) {
+    DatePickerDialog(context,{ _, year, monthOfYear, dayOfMonth ->
+        updateDate("$dayOfMonth/$monthOfYear/$year")
+    }, LocalDate.now().year, LocalDate.now().monthValue, LocalDate.now().dayOfMonth).show()
+}
+
 
 
 @RequiresApi(Build.VERSION_CODES.O)
