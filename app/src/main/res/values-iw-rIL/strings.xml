@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">הוצאות</string>
+    <string name="sum">סכום</string>
+    <string name="add_expense">" הוצאה"</string>
+    <string name="food">אוכל</string>
+    <string name="fuel">דלק</string>
+    <string name="car">רכב</string>
+    <string name="hobbies">תחביבים</string>
+    <string name="phone">טלפון</string>
+    <string name="rent">שכירות</string>
+    <string name="tools">כלים</string>
+    <string name="clothing">ביגוד</string>
+    <string name="other">אחר</string>
+    <string name="save_expense">שמירה</string>
+    <string name="details">פירוט</string>
+    <string name="saved">נשמר</string>
+    <string name="list_tab">רשימה</string>
+    <string name="calc_tab">חישובים</string>
+    <string name="third_tab">עוד</string>
+</resources>
