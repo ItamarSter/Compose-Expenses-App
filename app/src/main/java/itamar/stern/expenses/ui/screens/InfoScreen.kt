@@ -24,7 +24,7 @@ import java.time.LocalDate
 @Composable
 fun InfoScreen() {
     val viewModel: SecondViewModel = viewModel()
-    var monthValue by remember { mutableStateOf("${LocalDate.now().monthValue-1}") }
+    var monthValue by remember { mutableStateOf("${LocalDate.now().monthValue - 1}") }
     var dropDownExpandedMonths by remember { mutableStateOf(false) }
     val dropItemsMonths = listOf(
         stringResource(id = R.string.january),
@@ -40,7 +40,7 @@ fun InfoScreen() {
         stringResource(id = R.string.november),
         stringResource(id = R.string.december),
     )
-    var selectedItemMonths by remember { mutableStateOf(dropItemsMonths[LocalDate.now().monthValue-1]) }
+    var selectedItemMonths by remember { mutableStateOf(dropItemsMonths[LocalDate.now().monthValue - 1]) }
     var yearValue by remember { mutableStateOf("${LocalDate.now().year}") }
     var dropDownExpandedYears by remember { mutableStateOf(false) }
     val dropItemsYears = listOf(
@@ -118,7 +118,10 @@ fun InfoScreen() {
                         onClick = {
                             selectedItemMonths = dropItemsMonths[index]
                             monthValue = selectedItemMonths
-                            viewModel.updatePeriod(dropItemsMonths.indexOf(monthValue)+1, yearValue)
+                            viewModel.updatePeriod(
+                                dropItemsMonths.indexOf(monthValue) + 1,
+                                yearValue
+                            )
                             dropDownExpandedMonths = false
                         },
                     ) {
@@ -150,13 +153,22 @@ fun InfoScreen() {
             viewModel.other.observeAsState(),
         )
         val sum = viewModel.sum.observeAsState()
-        for (i in 0 until typesItems.size-1){
-            Row() {
+        for (i in typesItems.indices) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
                 Text(text = typesItems[i])
-                Text(text = "${values[i].value}")
+                Text(text = if (values[i].value == null) "0" else "${values[i].value}")
             }
         }
-        Row() {
+        Divider(color = Color.Black)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
             Text(text = "סה\"כ")
             Text(text = "${sum.value}")
         }

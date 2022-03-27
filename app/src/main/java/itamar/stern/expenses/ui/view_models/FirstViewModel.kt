@@ -16,4 +16,8 @@ class FirstViewModel:ViewModel() {
     init {
         allExpenses = ExpensesApplication.roomDB.expensesDao().getAll()
     }
+
+    fun deleteExpense(timeStamp: Long){
+        ExpensesApplication.roomDB.expensesDao().deleteExpenseByTimeStamp(timeStamp)
+    }
 }

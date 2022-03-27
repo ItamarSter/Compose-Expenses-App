@@ -20,4 +20,7 @@ interface ExpensesDao {
     @Query("SELECT SUM(sum) FROM Expenses WHERE date LIKE :monthAndYear")
     fun getSumByMonthAndYear(monthAndYear: String): LiveData<Int>
 
+    @Query("DELETE FROM Expenses WHERE timeStamp LIKE :timeStamp")
+    fun deleteExpenseByTimeStamp(timeStamp: Long)
+
 }

@@ -22,6 +22,7 @@ class SecondViewModel:ViewModel() {
     var other: LiveData<Int>
 
     var sum: LiveData<Int>
+
     init {
         food = ExpensesApplication.roomDB.expensesDao().getCategory("אוכל", "%/${LocalDate.now().monthValue}/${LocalDate.now().year}")
         fuel = ExpensesApplication.roomDB.expensesDao().getCategory("דלק", "%/${LocalDate.now().monthValue}/${LocalDate.now().year}")
@@ -37,7 +38,6 @@ class SecondViewModel:ViewModel() {
 
     fun updatePeriod(monthValue: Int, yearValue: String){
         val monthAndYear = "%/$monthValue/$yearValue"
-        println(monthAndYear)
         food = ExpensesApplication.roomDB.expensesDao().getCategory("אוכל", monthAndYear)
         fuel = ExpensesApplication.roomDB.expensesDao().getCategory("דלק", monthAndYear)
         car = ExpensesApplication.roomDB.expensesDao().getCategory("רכב", monthAndYear)
@@ -47,5 +47,6 @@ class SecondViewModel:ViewModel() {
         tools = ExpensesApplication.roomDB.expensesDao().getCategory("כלים", monthAndYear)
         hobbies = ExpensesApplication.roomDB.expensesDao().getCategory("תחביבים", monthAndYear)
         other = ExpensesApplication.roomDB.expensesDao().getCategory("אחר", monthAndYear)
+        sum = ExpensesApplication.roomDB.expensesDao().getSumByMonthAndYear(monthAndYear)
     }
 }

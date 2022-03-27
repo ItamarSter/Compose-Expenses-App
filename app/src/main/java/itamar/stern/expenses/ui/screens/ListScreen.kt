@@ -52,10 +52,24 @@ fun ListScreen() {
             openDialog = false //onDismiss callback
         }
     }
+    var itemTimeStampToDelete by remember { mutableStateOf(0L) }
+    var openDeleteDialog by remember { mutableStateOf(false) }
+    if (openDeleteDialog) {
+        OpenDeleteDialog({
+            println(itemTimeStampToDelete)
+            viewModel.deleteExpense(itemTimeStampToDelete)
+            Toast.makeText(context, "נמחק", Toast.LENGTH_SHORT).show()
+        }) {
+            openDeleteDialog = false //onDismiss callback
+        }
+    }
     Box {
         LazyColumn {
             items(expensesList.value) { expense ->
-                ExpenseItem(expense)
+                ExpenseItem(expense){
+                    itemTimeStampToDelete = it
+                    openDeleteDialog = true //delete callback
+                }
             }
         }
         Row(
@@ -79,7 +93,7 @@ fun ListScreen() {
 }
 
 @Composable
-fun ExpenseItem(expense: Expenses) {
+fun ExpenseItem(expense: Expenses, onDelete:(Long)->Unit) {
     var textOverFlow by remember { mutableStateOf(false) }
     var maxLines by remember { mutableStateOf(1) }
     Card(
@@ -102,6 +116,13 @@ fun ExpenseItem(expense: Expenses) {
                     .clickable {
                         maxLines = if (maxLines == 1) 4 else 1
                     }
+            )
+            Icon(
+                imageVector = Icons.Default.Delete,
+                contentDescription = "delete item",
+                modifier = Modifier.clickable {
+                    onDelete(expense.timeStamp)
+                }
             )
         }
         Column(
@@ -316,6 +337,30 @@ fun OpenAddDialog(saveExpense: (Expenses) -> Unit, onDismiss: () -> Unit) {
                     }
                 }
             }
+        }
+    )
+}
+
+@Composable
+fun OpenDeleteDialog(deleteExpense: () -> Unit, onDismiss: () -> Unit) {
+
+    AlertDialog(
+        onDismissRequest = { onDismiss() },
+        buttons = {
+            Row {
+                Button(onClick = {
+                    deleteExpense()
+                    onDismiss()
+                }) {
+                    Text(text = "כן")
+                }
+                Button(onClick = { onDismiss() }) {
+                    Text(text = "לא")
+                }
+            }
+        },
+        text = {
+            Text(text = "למחוק?")
         }
     )
 }
