@@ -3,12 +3,8 @@ package itamar.stern.expenses.ui.screens
 import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Build
-import android.widget.DatePicker
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.expandHorizontally
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -29,11 +25,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.android.material.datepicker.MaterialDatePicker
 import itamar.stern.expenses.R
 import itamar.stern.expenses.models.Expenses
 import itamar.stern.expenses.ui.view_models.FirstViewModel
@@ -58,7 +52,7 @@ fun ListScreen() {
             openDialog = false //onDismiss callback
         }
     }
-    Box() {
+    Box {
         LazyColumn {
             items(expensesList.value) { expense ->
                 ExpenseItem(expense)
@@ -160,7 +154,7 @@ fun OpenAddDialog(saveExpense: (Expenses) -> Unit, onDismiss: () -> Unit) {
     var titleValue by remember { mutableStateOf("") }
     var dateValue by remember { mutableStateOf("${LocalDate.now().dayOfMonth}/${LocalDate.now().monthValue}/${LocalDate.now().year}") }
     var dropDownExpanded by remember { mutableStateOf(false) }
-    val dropItems = listOf(
+    val typesItems = listOf(
         stringResource(id = R.string.food),
         stringResource(id = R.string.fuel),
         stringResource(id = R.string.car),
@@ -171,7 +165,7 @@ fun OpenAddDialog(saveExpense: (Expenses) -> Unit, onDismiss: () -> Unit) {
         stringResource(id = R.string.hobbies),
         stringResource(id = R.string.other),
     )
-    var selectedItem by remember { mutableStateOf(dropItems[0]) }
+    var selectedItem by remember { mutableStateOf(typesItems[0]) }
     AlertDialog(
         onDismissRequest = { onDismiss() },
         buttons = {},
@@ -310,10 +304,10 @@ fun OpenAddDialog(saveExpense: (Expenses) -> Unit, onDismiss: () -> Unit) {
                     expanded = dropDownExpanded,
                     onDismissRequest = { dropDownExpanded = false }
                 ) {
-                    dropItems.forEachIndexed { index, str ->
+                    typesItems.forEachIndexed { index, str ->
                         DropdownMenuItem(
                             onClick = {
-                                selectedItem = dropItems[index]
+                                selectedItem = typesItems[index]
                                 dropDownExpanded = false
                             },
                         ) {

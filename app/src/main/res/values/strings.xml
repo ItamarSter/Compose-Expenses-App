@@ -17,4 +17,22 @@
     <string name="list_tab">List</string>
     <string name="info_tab">Information</string>
     <string name="history_tab">History</string>
+    <string name="y2022">2022</string>
+    <string name="y2023">2023</string>
+    <string name="y2024">2024</string>
+    <string name="y2025">2025</string>
+    <string name="y2026">2026</string>
+    <string name="y2027">2027</string>
+    <string name="january">ינואר</string>
+    <string name="february">פברואר</string>
+    <string name="march">מרץ</string>
+    <string name="april">אפריל</string>
+    <string name="may">מאי</string>
+    <string name="june">יוני</string>
+    <string name="july">יולי</string>
+    <string name="august">אוגוסט</string>
+    <string name="september">ספטמבר</string>
+    <string name="october">אוקטובר</string>
+    <string name="november">נובמבר</string>
+    <string name="december">דצמבר</string>
 </resources>
